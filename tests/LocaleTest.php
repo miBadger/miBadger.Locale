@@ -10,12 +10,14 @@
 
 namespace miBadger\Locale;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * The locale test.
  *
  * @since 1.0.0
  */
-class LocaleTest extends \PHPUnit_Framework_TestCase
+class LocaleTest extends TestCase
 {
 	public function setUp()
 	{
@@ -61,7 +63,7 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testInit()
 	{
-		Locale::init(__DIR__ . '/locale', 'messages');
+		$this->assertNull(Locale::init(__DIR__ . '/locale', 'messages'));
 	}
 
 	/**
@@ -69,8 +71,8 @@ class LocaleTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testAdd()
 	{
-		Locale::add('nl', 'nl_NL.UTF-8');
-		Locale::add('en', 'en_GB.UTF-8');
+		$this->assertNull(Locale::add('nl', 'nl_NL.UTF-8'));
+		$this->assertNull(Locale::add('en', 'en_GB.UTF-8'));
 	}
 
 	/**
