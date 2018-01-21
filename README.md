@@ -3,6 +3,7 @@
 [![Build Status](https://scrutinizer-ci.com/g/miBadger/miBadger.Locale/badges/build.png?b=master)](https://scrutinizer-ci.com/g/miBadger/miBadger.Locale/build-status/master)
 [![Code Coverage](https://scrutinizer-ci.com/g/miBadger/miBadger.Locale/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/miBadger/miBadger.Locale/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/miBadger/miBadger.Locale/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/miBadger/miBadger.Locale/?branch=master)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/d411363f-dbf8-4168-980a-6ce96a66aa54/mini.png)](https://insight.sensiolabs.com/projects/d411363f-dbf8-4168-980a-6ce96a66aa54)
 
 The Locale Component.
 
