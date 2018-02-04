@@ -5,7 +5,6 @@
  *
  * @author Michael Webbers <michael@webbers.io>
  * @license http://opensource.org/licenses/Apache-2.0 Apache v2 License
- * @version 1.0.0
  */
 
 namespace miBadger\Locale;
@@ -30,36 +29,6 @@ class LocaleTest extends TestCase
 
 	/**
 	 * @runInSeparateProcess
- 	 * @expectedException \RuntimeException
- 	 * @expectedExceptionMessage Locale 'test' was not found
-	 */
-	public function testSetException()
-	{
-		$this->assertNull(Locale::set('test'));
-	}
-
-	/**
-	 * @runInSeparateProcess
- 	 * @expectedException \RuntimeException
- 	 * @expectedExceptionMessage No locale set
-	 */
-	public function testGetException()
-	{
-		$this->assertNull(Locale::get());
-	}
-
-	/**
-	 * @runInSeparateProcess
- 	 * @expectedException \RuntimeException
- 	 * @expectedExceptionMessage No locale set
-	 */
-	public function testPathException()
-	{
-		$this->assertNull(Locale::path());
-	}
-
-	/**
-	 * @runInSeparateProcess
 	 */
 	public function testInit()
 	{
@@ -67,72 +36,224 @@ class LocaleTest extends TestCase
 	}
 
 	/**
-	 * @depends testInit
+	 * @runInSeparateProcess
 	 */
-	public function testAdd()
+	public function testBind()
 	{
-		$this->assertNull(Locale::add('nl', 'nl_NL.UTF-8'));
-		$this->assertNull(Locale::add('en', 'en_GB.UTF-8'));
+		$this->assertNull(Locale::init(__DIR__ . '/locale', 'messages'));
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertTrue(Locale::add('en_GB.UTF-8'));
+
+		$this->assertNull(Locale::bind('nl_NL.UTF-8'));
+		$this->assertEquals(gettext('first'), 'Eerste test string nl_NL');
+		$this->assertEquals(gettext('second'), 'Tweede test string nl_NL');
+
+		$this->assertNull(Locale::bind('en_GB.UTF-8'));
+		$this->assertEquals(gettext('first'), 'First test string en_GB');
+		$this->assertEquals(gettext('second'), 'Second test string en_GB');
 	}
 
 	/**
-	 * @depends testAdd
+	 * @runInSeparateProcess
+	 * @expectedException miBadger\Locale\LocaleException
+	 * @expectedExceptionMessage Locale doesn't exist.
 	 */
-	public function testSet()
+	public function testBindEception()
 	{
-		Locale::init(__DIR__ . '/locale', 'messages');
-
-		Locale::add('nl', 'nl_NL.UTF-8');
-		Locale::add('en', 'en_GB.UTF-8');
-
-		Locale::set('nl');
-
-		$this->assertEquals(Locale::get(), 'nl');
+		Locale::bind('nl_NL.UTF-8');
 	}
 
 	/**
-	 * @depends testInit
+	 * @runInSeparateProcess
 	 */
 	public function testGetIterator()
 	{
-		Locale::add('nl', 'nl_NL.UTF-8');
-		Locale::add('en', 'en_GB.UTF-8');
+		Locale::add('nl_NL.UTF-8');
+		Locale::add('en_GB.UTF-8');
 
-		$this->assertEquals(new \ArrayIterator(['nl' => 'nl_NL.UTF-8', 'en' => 'en_GB.UTF-8']), Locale::getInstance()->getIterator());
+		$this->assertEquals(new \ArrayIterator(['nl_NL.UTF-8', 'en_GB.UTF-8']), Locale::getInstance()->getIterator());
 	}
 
 	/**
-	 * @depends testInit
-	 * @depends testSet
+	 * @runInSeparateProcess
 	 */
-	public function testPath()
+	public function testCount()
 	{
-		Locale::init(__DIR__ . '/locale', 'messages');
-		Locale::add('nl', 'nl_NL.UTF-8');
-		Locale::set('nl');
-
-		$this->assertEquals(Locale::path(), __DIR__ . '/locale/nl_NL/');
+		$this->assertEquals(0, Locale::count());
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertEquals(1, Locale::count());
 	}
 
 	/**
-	 * @depends testPath
-	 * @depends testSet
+	 * @runInSeparateProcess
 	 */
-	public function testBindings()
+	public function testIsEmpty()
 	{
-		Locale::init(__DIR__ . '/locale', 'messages');
+		$this->assertTrue(Locale::isEmpty());
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertFalse(Locale::isEmpty());
+	}
 
-		Locale::add('nl', 'nl_NL.UTF-8');
-		Locale::add('en', 'en_GB.UTF-8');
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testAdd()
+	{
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertFalse(Locale::add('nl_NL.UTF-8'));
+	}
 
-		Locale::set('nl');
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testRemove()
+	{
+		$this->assertFalse(Locale::remove('nl_NL.UTF-8'));
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertTrue(Locale::remove('nl_NL.UTF-8'));
+	}
 
-		$this->assertEquals( gettext('first'), 'Eerste test string nl_NL');
-		$this->assertEquals( gettext('second'), 'Tweede test string nl_NL');
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testClear()
+	{
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertFalse(Locale::isEmpty());
+		$this->assertTrue(Locale::clear());
+		$this->assertTrue(Locale::isEmpty());
+	}
 
-		Locale::set('en');
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGetLocale()
+	{
+		$this->assertNull(Locale::getLocale());
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8'));
+		$this->assertEquals('nl_NL.UTF-8', Locale::getLocale());
+	}
 
-		$this->assertEquals( gettext('first'), 'First test string en_GB');
-		$this->assertEquals( gettext('second'), 'Second test string en_GB');
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGetLanguage()
+	{
+		$this->assertNull(Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl'));
+		$this->assertNull(Locale::bind('nl'));
+		$this->assertEquals('nl', Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl_NL'));
+		$this->assertNull(Locale::bind('nl_NL'));
+		$this->assertEquals('nl', Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8'));
+		$this->assertEquals('nl', Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8@test'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8@test'));
+		$this->assertEquals('nl', Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl_NL@test'));
+		$this->assertNull(Locale::bind('nl_NL@test'));
+		$this->assertEquals('nl', Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl.UTF-8'));
+		$this->assertNull(Locale::bind('nl.UTF-8'));
+		$this->assertEquals('nl', Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl.UTF-8@test'));
+		$this->assertNull(Locale::bind('nl.UTF-8@test'));
+		$this->assertEquals('nl', Locale::getLanguage());
+
+		$this->assertTrue(Locale::add('nl@test'));
+		$this->assertNull(Locale::bind('nl@test'));
+		$this->assertEquals('nl', Locale::getLanguage());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGetTerritory()
+	{
+		$this->assertNull(Locale::getTerritory());
+
+		$this->assertTrue(Locale::add('nl'));
+		$this->assertNull(Locale::bind('nl'));
+		$this->assertNull(Locale::getTerritory());
+
+		$this->assertTrue(Locale::add('nl_NL'));
+		$this->assertNull(Locale::bind('nl_NL'));
+		$this->assertEquals('NL', Locale::getTerritory());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8'));
+		$this->assertEquals('NL', Locale::getTerritory());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8@test'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8@test'));
+		$this->assertEquals('NL', Locale::getTerritory());
+
+		$this->assertTrue(Locale::add('nl_NL@test'));
+		$this->assertNull(Locale::bind('nl_NL@test'));
+		$this->assertEquals('NL', Locale::getTerritory());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGetCodeset()
+	{
+		$this->assertNull(Locale::getCodeset());
+
+		$this->assertTrue(Locale::add('nl_NL'));
+		$this->assertNull(Locale::bind('nl_NL'));
+		$this->assertNull(Locale::getModifier());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8'));
+		$this->assertEquals('UTF-8', Locale::getCodeset());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8@test'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8@test'));
+		$this->assertEquals('UTF-8', Locale::getCodeset());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGetModifier()
+	{
+		$this->assertNull(Locale::getModifier());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8'));
+		$this->assertNull(Locale::getModifier());
+
+		$this->assertTrue(Locale::add('nl_NL.UTF-8@test'));
+		$this->assertNull(Locale::bind('nl_NL.UTF-8@test'));
+		$this->assertEquals('test', Locale::getModifier());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGetPath()
+	{
+		$this->assertNull(Locale::init(__DIR__ . '/locale', 'messages'));
+		$this->assertEquals(__DIR__ . '/locale', Locale::getPath());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testGetDomain()
+	{
+		$this->assertNull(Locale::init(__DIR__ . '/locale', 'messages'));
+		$this->assertEquals('messages', Locale::getDomain());
 	}
 }

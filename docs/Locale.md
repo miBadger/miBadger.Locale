@@ -10,37 +10,82 @@ The locale class.
 use miBadger/Locale;
 
 /**
- * Initialize the locale with the translation file directory and text domain.
+ * Initialize the locale with the given path and domain.
  */
-Locale::init(__DIR__ . '/locale', 'messages');
+Locale::init(string $path, string $domain = self::DEFAULT_DOMAIN);
+
+/**
+ * Bind the locale.
+ */
+Locale::bind($locale);
 
 /**
  * {@inheritdoc}
  */
-Locale::getIterator();
+Locale::getInstance()->getIterator();
 
 /**
- * Add a locale entry to the possible locales.
+ * Returns the number of locales in this set.
  */
-Locale::add('nl', 'nl_NL');
+Locale::count();
 
 /**
- * Use a previously-added locale.
+ * Returns true if this set contains no elements.
  */
-Locale::set('nl');
+Locale::isEmpty();
 
 /**
- * Retrieves the currently set locale.
+ * Returns true if this set contains the specified element.
  */
-Locale::get();
+Locale::contains($locale);
 
 /**
- * Returns the path of the current locale.
+ * Adds the specified locale to this set if it is not already present.
  */
-Locale::path();
+Locale::add($locale);
 
 /**
- * Get an iterator with each locale added.
+ * Removes the specified element from this set if it is present.
  */
-Locale::getIterator();
+Locale::remove($locale);
+
+/**
+ * Removes all of the elements from this set.
+ */
+Locale::clear();
+
+/**
+ * Returns the locale.
+ */
+Locale::getLocale();
+
+/**
+ * Returns the languge.
+ */
+Locale::getLanguage();
+
+/**
+ * Returns the territory.
+ */
+Locale::getTerritory();
+
+/**
+ * Returns the codeset.
+ */
+Locale::getCodeset();
+
+/**
+ * Returns the modifier.
+ */
+Locale::getModifier();
+
+/**
+ * Returns the path.
+ */
+Locale::getPath();
+
+/**
+ * Returns the domain.
+ */
+Locale::getDomain();
 ```
