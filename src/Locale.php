@@ -184,7 +184,7 @@ class Locale implements \IteratorAggregate
 	/**
 	 * Returns the locale.
 	 *
-	 * @return string the locale.
+	 * @return string|null the locale.
 	 */
 	public static function getLocale()
 	{
@@ -194,7 +194,7 @@ class Locale implements \IteratorAggregate
 	/**
 	 * Returns the languge.
 	 *
-	 * @return string the language.
+	 * @return string|null the language.
 	 */
 	public static function getLanguage()
 	{
@@ -206,7 +206,7 @@ class Locale implements \IteratorAggregate
 	/**
 	 * Returns the territory.
 	 *
-	 * @return string the territory.
+	 * @return string|null the territory.
 	 */
 	public static function getTerritory()
 	{
@@ -218,7 +218,7 @@ class Locale implements \IteratorAggregate
 	/**
 	 * Returns the codeset.
 	 *
-	 * @return string the codeset.
+	 * @return string|null the codeset.
 	 */
 	public static function getCodeset()
 	{
@@ -230,7 +230,7 @@ class Locale implements \IteratorAggregate
 	/**
 	 * Returns the modifier.
 	 *
-	 * @return string the modifier.
+	 * @return string|null the modifier.
 	 */
 	public static function getModifier()
 	{
@@ -242,7 +242,7 @@ class Locale implements \IteratorAggregate
 	/**
 	 * Returns the path.
 	 *
-	 * @return string the path.
+	 * @return string|null the path.
 	 */
 	public static function getPath()
 	{
